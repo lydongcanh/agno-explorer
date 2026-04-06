@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { Message } from '../types/chat'
-import { sendChatMessage } from '../api/chat'
+import { subscribeToChat } from '../api/chat'
 
 export function useChat() {
   const [messages, setMessages] = useState<Message[]>([])
@@ -13,17 +13,28 @@ export function useChat() {
     ])
     setLoading(true)
 
+    const assistantId = crypto.randomUUID()
+    setMessages((prev) => [
+      ...prev,
+      { id: assistantId, role: 'assistant', content: '' },
+    ])
+
     try {
-      const reply = await sendChatMessage(text)
-      setMessages((prev) => [
-        ...prev,
-        { id: crypto.randomUUID(), role: 'assistant', content: reply },
-      ])
+      await subscribeToChat(text, (chunk) => {
+        setMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === assistantId ? { ...msg, content: msg.content + chunk } : msg,
+          ),
+        )
+      })
     } catch (err) {
-      setMessages((prev) => [
-        ...prev,
-        { id: crypto.randomUUID(), role: 'assistant', content: `Error: ${(err as Error).message}` },
-      ])
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === assistantId
+            ? { ...msg, content: `Error: ${(err as Error).message}` }
+            : msg,
+        ),
+      )
     } finally {
       setLoading(false)
     }
