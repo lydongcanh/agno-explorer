@@ -17,15 +17,18 @@ export function MessageList({ messages, loading }: Readonly<Props>) {
   return (
     <div style={styles.container}>
       {messages.map((msg) => (
-        <div
-          key={msg.id}
-          style={{
-            ...styles.bubble,
-            ...(msg.role === 'user' ? styles.userBubble : styles.assistantBubble),
-          }}
-        >
+        <div key={msg.id} style={styles.messageGroup}>
           {msg.role === 'assistant' && <ThinkingSteps steps={msg.steps} />}
-          {msg.content}
+          {msg.content && (
+            <div
+              style={{
+                ...styles.bubble,
+                ...(msg.role === 'user' ? styles.userBubble : styles.assistantBubble),
+              }}
+            >
+              {msg.content}
+            </div>
+          )}
         </div>
       ))}
       {loading && (
@@ -46,6 +49,12 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     flexDirection: 'column',
     gap: '12px',
+  },
+  messageGroup: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '8px',
+    width: '100%',
   },
   bubble: {
     maxWidth: '70%',
