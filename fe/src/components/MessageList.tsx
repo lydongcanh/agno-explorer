@@ -53,15 +53,16 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: '15px',
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
+    textAlign: 'left',
   },
   userBubble: {
     alignSelf: 'flex-end',
-    background: '#7c3aed',
-    color: '#fff',
+    background: '#f0ede6',
+    color: '#1a1a1a',
   },
   assistantBubble: {
     alignSelf: 'flex-start',
-    background: '#1e1e1e',
-    border: '1px solid #2a2a2a',
+    background: 'transparent',
+    color: '#1a1a1a',
   },
 }

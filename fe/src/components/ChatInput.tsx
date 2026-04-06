@@ -26,7 +26,11 @@ export function ChatInput({ onSend, disabled }: Readonly<Props>) {
         disabled={disabled}
         autoFocus
       />
-      <button style={styles.button} type="submit" disabled={disabled || !input.trim()}>
+      <button
+        style={disabled || !input.trim() ? { ...styles.button, ...styles.buttonDisabled } : styles.button}
+        type="submit"
+        disabled={disabled || !input.trim()}
+      >
         Send
       </button>
     </form>
@@ -38,16 +42,16 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     gap: '8px',
     padding: '16px 24px',
-    borderTop: '1px solid #2a2a2a',
-    background: '#161616',
+    borderTop: '1px solid #e5e3dc',
+    background: '#f5f4ef',
   },
   input: {
     flex: 1,
     padding: '10px 14px',
     borderRadius: '8px',
-    border: '1px solid #2a2a2a',
-    background: '#1e1e1e',
-    color: '#e5e5e5',
+    border: '1px solid #d9d6ce',
+    background: '#fff',
+    color: '#1a1a1a',
     fontSize: '15px',
     outline: 'none',
   },
@@ -55,10 +59,16 @@ const styles: Record<string, React.CSSProperties> = {
     padding: '10px 20px',
     borderRadius: '8px',
     border: 'none',
-    background: '#7c3aed',
+    background: '#cf6679',
     color: '#fff',
     fontSize: '15px',
     cursor: 'pointer',
     fontWeight: 500,
+    transition: 'opacity 0.15s, background 0.15s',
+  },
+  buttonDisabled: {
+    background: '#d9d6ce',
+    color: '#a8a29e',
+    cursor: 'not-allowed',
   },
 }

@@ -22,16 +22,16 @@ const styles: Record<string, React.CSSProperties> = {
     display: 'flex',
     flexDirection: 'column',
     height: '100vh',
-    background: '#0f0f0f',
-    color: '#e5e5e5',
+    background: '#f5f4ef',
+    color: '#1a1a1a',
     fontFamily: 'system-ui, sans-serif',
   },
   header: {
     padding: '16px 24px',
-    borderBottom: '1px solid #2a2a2a',
+    borderBottom: '1px solid #e5e3dc',
     fontWeight: 600,
     fontSize: '16px',
-    background: '#161616',
+    background: '#f5f4ef',
   },
 }
 
