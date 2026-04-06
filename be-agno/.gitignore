@@ -1,0 +1,65 @@
+# ==========================================
+# Environments & Dependency Management
+# ==========================================
+.venv/
+venv/
+env/
+# Note: Do NOT ignore poetry.lock or pyproject.toml!
+
+# ==========================================
+# Security & Environment Variables (CRITICAL)
+# ==========================================
+# Never commit your OpenAI, Anthropic, or database credentials.
+.env
+.env.local
+.env.development
+.env.test
+# (Optional: Allow a template file so the team knows what keys are needed)
+!.env.example 
+
+# ==========================================
+# Agno & Local Databases
+# ==========================================
+# Agno often uses local SQLite files or folders for agent memory/RAG.
+# You do not want to commit heavy vector stores or local chat histories.
+agno_data/
+workspace_data/
+storage/
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+
+# ==========================================
+# Python Bytecode
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# ==========================================
+# Tooling Caches (Ruff, Pytest, etc.)
+# ==========================================
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+coverage.xml
+
+# ==========================================
+# Logs
+# ==========================================
+logs/
+*.log
+
+# ==========================================
+# OS & IDEs
+# ==========================================
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/extensions.json
+# Note: We are NOT completely ignoring .vscode/ so that your team 
+# can share the settings.json file we created earlier!
