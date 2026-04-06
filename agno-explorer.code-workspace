@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "be-agno"
+		},
+		{
+			"path": "fe"
 		}
 	],
 	"settings": {
