@@ -1,5 +1,6 @@
 import React, { useRef, useEffect } from 'react'
 import type { Message } from '../types/chat'
+import { ThinkingSteps } from './ThinkingSteps'
 
 interface Props {
   messages: Message[]
@@ -23,6 +24,7 @@ export function MessageList({ messages, loading }: Readonly<Props>) {
             ...(msg.role === 'user' ? styles.userBubble : styles.assistantBubble),
           }}
         >
+          {msg.role === 'assistant' && <ThinkingSteps steps={msg.steps} />}
           {msg.content}
         </div>
       ))}
