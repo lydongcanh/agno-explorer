@@ -4,6 +4,7 @@ export const TOOL_LABELS: Record<string, string> = {
   analyze_complexity: 'Analyzing complexity',
   check_naming: 'Checking naming',
   check_security: 'Scanning security',
+  apply_fix: 'Apply fix',
 }
 
 export const TOOL_ICONS: Record<string, string> = {

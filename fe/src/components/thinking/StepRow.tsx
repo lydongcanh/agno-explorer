@@ -2,13 +2,21 @@ import React from 'react'
 import type { ToolStep } from '../../types/chat'
 import { toolLabel } from './toolMeta'
 import { AnimatedSpinner } from './AnimatedSpinner'
+import { ConfirmationRow } from './ConfirmationRow'
 
-export function StepRow({ step, index }: Readonly<{ step: ToolStep; index: number }>) {
+interface StepRowProps {
+  step: ToolStep
+  index: number
+  onConfirm: (runId: string, requirementId: string, confirmed: boolean) => Promise<void>
+}
+
+export function StepRow({ step, index, onConfirm }: Readonly<StepRowProps>) {
   const isDone = step.status === 'done'
   const isRunning = step.status === 'running'
+  const isAwaiting = step.status === 'awaiting_confirmation'
 
   let stepStyle = styles.step
-  if (isRunning) stepStyle = { ...styles.step, ...styles.stepRunning }
+  if (isRunning || isAwaiting) stepStyle = { ...styles.step, ...styles.stepRunning }
   else if (isDone) stepStyle = { ...styles.step, ...styles.stepDone }
 
   return (
@@ -20,7 +28,7 @@ export function StepRow({ step, index }: Readonly<{ step: ToolStep; index: numbe
         ) : (
           <span style={styles.checkIcon}>✓</span>
         )}
-        <span style={{ ...styles.stepLabel, ...(isRunning ? styles.stepLabelRunning : {}) }}>
+        <span style={{ ...styles.stepLabel, ...((isRunning || isAwaiting) ? styles.stepLabelRunning : {}) }}>
           {toolLabel(step.toolName)}
         </span>
       </div>
@@ -30,6 +38,8 @@ export function StepRow({ step, index }: Readonly<{ step: ToolStep; index: numbe
           <div style={styles.progressFill} />
         </div>
       )}
+
+      {isAwaiting && <ConfirmationRow step={step} onConfirm={onConfirm} />}
 
       {isDone && step.result && (
         <p style={styles.result}>{step.result}</p>

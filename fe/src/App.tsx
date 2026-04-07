@@ -4,14 +4,14 @@ import { MessageList } from './components/MessageList'
 import { ChatInput } from './components/ChatInput'
 
 function App() {
-  const { messages, loading, send } = useChat()
+  const { messages, loading, send, confirm } = useChat()
 
   return (
     <div style={styles.container}>
       <header style={styles.header}>
         <span>Agno Explorer</span>
       </header>
-      <MessageList messages={messages} loading={loading} />
+      <MessageList messages={messages} loading={loading} onConfirm={confirm} />
       <ChatInput onSend={send} disabled={loading} />
     </div>
   )

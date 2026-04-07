@@ -1,5 +1,6 @@
 import re
 import time
+from agno.tools import tool
 
 
 def detect_language(code: str) -> str:
@@ -159,4 +160,22 @@ def check_security(code: str) -> str:
         return "No obvious security disasters found. That just means I didn't look hard enough."
 
     return "\n".join(findings)
+
+
+@tool(
+    requires_confirmation=True,
+    description="Apply an automated fix to the code. Requires user confirmation before executing.",
+)
+def apply_fix(code: str, fix_description: str) -> str:
+    """Apply an automated fix to the reviewed code snippet.
+
+    Args:
+        code: The original source code.
+        fix_description: A description of the fix to apply.
+
+    Returns:
+        Confirmation that the fix was applied.
+    """
+    time.sleep(1)
+    return f"Fix applied: {fix_description}"
 

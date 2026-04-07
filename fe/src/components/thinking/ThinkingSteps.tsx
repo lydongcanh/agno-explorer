@@ -6,6 +6,7 @@ import { StepRow } from './StepRow'
 
 interface Props {
   steps: ToolStep[]
+  onConfirm: (runId: string, requirementId: string, confirmed: boolean) => Promise<void>
 }
 
 function getToggleLabel(allDone: boolean, count: number, runningStep?: ToolStep): string {
@@ -17,7 +18,7 @@ function getToggleLabel(allDone: boolean, count: number, runningStep?: ToolStep)
   return 'Thinking...'
 }
 
-export function ThinkingSteps({ steps = [] }: Readonly<Props>) {
+export function ThinkingSteps({ steps = [], onConfirm }: Readonly<Props>) {
   const [expanded, setExpanded] = useState(true)
 
   if (steps.length === 0) return null
@@ -43,7 +44,7 @@ export function ThinkingSteps({ steps = [] }: Readonly<Props>) {
       {expanded && (
         <div style={styles.steps}>
           {steps.map((step, index) => (
-            <StepRow key={step.id} step={step} index={index} />
+            <StepRow key={step.id} step={step} index={index} onConfirm={onConfirm} />
           ))}
         </div>
       )}

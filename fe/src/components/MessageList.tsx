@@ -6,9 +6,10 @@ import { ThinkingSteps } from './ThinkingSteps'
 interface Props {
   messages: Message[]
   loading: boolean
+  onConfirm: (runId: string, requirementId: string, confirmed: boolean) => Promise<void>
 }
 
-export function MessageList({ messages, loading }: Readonly<Props>) {
+export function MessageList({ messages, loading, onConfirm }: Readonly<Props>) {
   const bottomRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -19,7 +20,7 @@ export function MessageList({ messages, loading }: Readonly<Props>) {
     <div style={styles.container}>
       {messages.map((msg) => (
         <div key={msg.id} style={styles.messageGroup}>
-          {msg.role === 'assistant' && <ThinkingSteps steps={msg.steps} />}
+          {msg.role === 'assistant' && <ThinkingSteps steps={msg.steps} onConfirm={onConfirm} />}
           {msg.content && (
             <div
               className={msg.role === 'assistant' ? 'assistant-bubble' : undefined}
