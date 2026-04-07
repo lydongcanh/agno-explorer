@@ -2,15 +2,13 @@ import React from 'react'
 import type { ToolStep } from '../../types/chat'
 import { toolLabel } from './toolMeta'
 import { AnimatedSpinner } from './AnimatedSpinner'
-import { ConfirmationRow } from './ConfirmationRow'
 
 interface StepRowProps {
   step: ToolStep
   index: number
-  onConfirm: (runId: string, requirementId: string, confirmed: boolean) => Promise<void>
 }
 
-export function StepRow({ step, index, onConfirm }: Readonly<StepRowProps>) {
+export function StepRow({ step, index }: Readonly<StepRowProps>) {
   const isDone = step.status === 'done'
   const isRunning = step.status === 'running'
   const isAwaiting = step.status === 'awaiting_confirmation'
@@ -38,8 +36,6 @@ export function StepRow({ step, index, onConfirm }: Readonly<StepRowProps>) {
           <div style={styles.progressFill} />
         </div>
       )}
-
-      {isAwaiting && <ConfirmationRow step={step} onConfirm={onConfirm} />}
 
       {isDone && step.result && (
         <p style={styles.result}>{step.result}</p>

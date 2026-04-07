@@ -2,6 +2,7 @@ import React, { useRef, useEffect } from 'react'
 import ReactMarkdown from 'react-markdown'
 import type { Message } from '../types/chat'
 import { ThinkingSteps } from './ThinkingSteps'
+import { ConfirmationRow } from './thinking/ConfirmationRow'
 
 interface Props {
   messages: Message[]
@@ -20,7 +21,7 @@ export function MessageList({ messages, loading, onConfirm }: Readonly<Props>) {
     <div style={styles.container}>
       {messages.map((msg) => (
         <div key={msg.id} style={styles.messageGroup}>
-          {msg.role === 'assistant' && <ThinkingSteps steps={msg.steps} onConfirm={onConfirm} />}
+          {msg.role === 'assistant' && <ThinkingSteps steps={msg.steps} />}
           {msg.content && (
             <div
               className={msg.role === 'assistant' ? 'assistant-bubble' : undefined}
@@ -36,6 +37,11 @@ export function MessageList({ messages, loading, onConfirm }: Readonly<Props>) {
               )}
             </div>
           )}
+          {msg.role === 'assistant' && msg.steps
+            .filter((s) => s.status === 'awaiting_confirmation')
+            .map((step) => (
+              <ConfirmationRow key={step.id} step={step} onConfirm={onConfirm} />
+            ))}
         </div>
       ))}
       {loading && (

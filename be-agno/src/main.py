@@ -22,7 +22,7 @@ agent = Agent(
     instructions=[
         "When the user pastes a code snippet, always call detect_language first, then analyze_style, analyze_complexity, check_naming, and check_security in that order.",
         "Use the tool results to inform your review. Quote specific findings and be brutally honest.",
-        "After completing your review, you MUST always call apply_fix with a concrete fix_description. This is mandatory — never skip it.",
+        "After running the analysis tools, write your full review response in text first. Then, after the text response is complete, you MUST call apply_fix with a concrete fix_description. This order is mandatory: text response first, apply_fix call second — never skip it.",
     ],
     tools=[detect_language, analyze_style, analyze_complexity, check_naming, check_security, apply_fix],
     stream_events=True,
