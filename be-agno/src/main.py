@@ -14,7 +14,7 @@ from tools.snippet_tools import detect_language, analyze_style, analyze_complexi
 load_dotenv()
 
 agent = Agent(
-    model=Groq(id="llama-3.3-70b-versatile"),
+    model=Groq(id="openai/gpt-oss-120b"),
     description="You are an AI assistant that talks like Linus Torvalds.",
     instructions=[
         "When the user pastes a code snippet, always call detect_language first, then analyze_style, analyze_complexity, check_naming, and check_security in that order.",
@@ -62,7 +62,6 @@ class Subscription:
     @strawberry.subscription
     async def chat(self, message: str) -> AsyncGenerator[ChatEvent, None]:
         async for event in agent.arun(message, stream=True):
-            print(f"[EVENT] {type(event).__name__}", flush=True)
             if isinstance(event, RunContentEvent) and event.content:
                 yield TextChunk(content=event.content)
             elif isinstance(event, ToolCallStartedEvent) and event.tool:

@@ -1,4 +1,4 @@
-import json
+import re
 import time
 
 
@@ -9,7 +9,7 @@ def detect_language(code: str) -> str:
         code: The source code snippet to analyze.
 
     Returns:
-        JSON string with the detected language and confidence.
+        A plain text summary of the detected language and confidence.
     """
     time.sleep(1)
 
@@ -30,7 +30,7 @@ def detect_language(code: str) -> str:
     else:
         language, confidence = "Unknown", "low"
 
-    return json.dumps({"language": language, "confidence": confidence})
+    return f"Detected language: {language} (confidence: {confidence})"
 
 
 def analyze_style(code: str) -> str:
@@ -40,7 +40,7 @@ def analyze_style(code: str) -> str:
         code: The source code snippet to analyze.
 
     Returns:
-        JSON string with a list of style findings, each having line, severity, and message.
+        A plain text summary of style findings.
     """
     time.sleep(2)
 
@@ -49,44 +49,28 @@ def analyze_style(code: str) -> str:
 
     for i, line in enumerate(lines, start=1):
         if len(line) > 100:
-            findings.append({
-                "line": i,
-                "severity": "warning",
-                "message": f"Line is {len(line)} characters. You think this is a novel? Keep it under 100.",
-            })
+            findings.append(f"Line {i}: {len(line)} characters — keep it under 100.")
         if "\t" in line and "    " in line:
-            findings.append({
-                "line": i,
-                "severity": "error",
-                "message": "Mixing tabs and spaces. Pick one and commit to it like an adult.",
-            })
+            findings.append(f"Line {i}: mixing tabs and spaces. Pick one.")
 
     if not findings:
         total_lines = len(lines)
         if total_lines > 50:
-            findings.append({
-                "line": 1,
-                "severity": "warning",
-                "message": f"This function is {total_lines} lines long. Short functions are a virtue.",
-            })
+            findings.append(f"Function is {total_lines} lines long. Short functions are a virtue.")
         else:
-            findings.append({
-                "line": 1,
-                "severity": "info",
-                "message": "Style looks passable. I've seen worse. That's not a compliment.",
-            })
+            findings.append("Style looks passable. I've seen worse. That's not a compliment.")
 
-    return json.dumps({"findings": findings})
+    return "\n".join(findings)
 
 
 def analyze_complexity(code: str) -> str:
-    """Estimate the cyclomatic complexity of functions in a code snippet.
+    """Estimate the cyclomatic complexity of a code snippet.
 
     Args:
         code: The source code snippet to analyze.
 
     Returns:
-        JSON string with complexity metrics per detected function.
+        A plain text summary of complexity metrics.
     """
     time.sleep(2)
 
@@ -108,16 +92,7 @@ def analyze_complexity(code: str) -> str:
     else:
         verdict = "This is a disaster. Refactor it."
 
-    return json.dumps({
-        "functions": [
-            {
-                "name": func_name,
-                "cyclomatic_complexity": complexity,
-                "lines": len(lines),
-                "verdict": verdict,
-            }
-        ]
-    })
+    return f"Function '{func_name}': cyclomatic complexity {complexity}, {len(lines)} lines. {verdict}"
 
 
 def check_naming(code: str) -> str:
@@ -127,37 +102,27 @@ def check_naming(code: str) -> str:
         code: The source code snippet to check.
 
     Returns:
-        JSON string with a list of naming issues, each having symbol and message.
+        A plain text summary of naming issues.
     """
     time.sleep(2)
 
-    import re
     issues = []
 
     single_letter_vars = re.findall(r'\b(?<!["\'])([a-z])\s*=\s*(?!\s*["\'])', code)
     seen = set()
     for var in single_letter_vars:
         if var not in seen and var not in ("i", "j", "k", "n", "x", "y"):
-            issues.append({
-                "symbol": var,
-                "message": f"'{var}' tells me nothing. What on earth does it hold?",
-            })
+            issues.append(f"'{var}' tells me nothing. What on earth does it hold?")
             seen.add(var)
 
     generic_names = re.findall(r'\b(tmp\w*|temp\w*|data\w*|helper\w*|stuff\w*|foo\w*|bar\w*)\b', code)
     for name in set(generic_names):
-        issues.append({
-            "symbol": name,
-            "message": f"'{name}' is not a name, it's a cry for help. Name it after what it actually does.",
-        })
+        issues.append(f"'{name}' is not a name, it's a cry for help. Name it after what it actually does.")
 
     if not issues:
-        issues.append({
-            "symbol": "—",
-            "message": "Naming is tolerable. I still hate the rest of it.",
-        })
+        return "Naming is tolerable. I still hate the rest of it."
 
-    return json.dumps({"issues": issues})
+    return "\n".join(issues)
 
 
 def check_security(code: str) -> str:
@@ -167,33 +132,31 @@ def check_security(code: str) -> str:
         code: The source code snippet to scan.
 
     Returns:
-        JSON string with a list of security findings, each having severity and message.
+        A plain text summary of security findings.
     """
     time.sleep(1.5)
 
     findings = []
 
     patterns = [
-        ("eval(", "critical", "eval() on user input is how you get owned. Remove it."),
-        ("exec(", "critical", "exec() is a loaded gun pointed at your foot."),
-        ("shell=True", "critical", "shell=True in subprocess is an injection vector. Use a list of args."),
-        ("pickle.loads", "high", "Deserializing pickle from untrusted input. Enjoy your RCE."),
-        ("md5(", "medium", "MD5 is not a security primitive anymore. Use SHA-256 at minimum."),
-        ("password", "medium", "Hardcoded 'password' string found. Is this actually in the code?"),
-        ("TODO", "info", "TODO comments in security-sensitive code. Fix it before shipping."),
-        ("SELECT *", "medium", "SELECT * is lazy. Also check for SQL injection while you're at it."),
-        ("strcpy(", "critical", "strcpy has no bounds checking. This is 1988 calling."),
-        ("gets(", "critical", "gets() was deprecated for a reason. Buffer overflow waiting to happen."),
+        ("eval(", "CRITICAL", "eval() on user input is how you get owned. Remove it."),
+        ("exec(", "CRITICAL", "exec() is a loaded gun pointed at your foot."),
+        ("shell=True", "CRITICAL", "shell=True in subprocess is an injection vector. Use a list of args."),
+        ("pickle.loads", "HIGH", "Deserializing pickle from untrusted input. Enjoy your RCE."),
+        ("md5(", "MEDIUM", "MD5 is not a security primitive anymore. Use SHA-256 at minimum."),
+        ("password", "MEDIUM", "Hardcoded 'password' string found. Is this actually in the code?"),
+        ("TODO", "INFO", "TODO comments in security-sensitive code. Fix it before shipping."),
+        ("SELECT *", "MEDIUM", "SELECT * is lazy. Also check for SQL injection while you're at it."),
+        ("strcpy(", "CRITICAL", "strcpy has no bounds checking. This is 1988 calling."),
+        ("gets(", "CRITICAL", "gets() was deprecated for a reason. Buffer overflow waiting to happen."),
     ]
 
     for pattern, severity, message in patterns:
         if pattern.lower() in code.lower():
-            findings.append({"severity": severity, "message": message})
+            findings.append(f"[{severity}] {message}")
 
     if not findings:
-        findings.append({
-            "severity": "info",
-            "message": "No obvious security disasters found. That just means I didn't look hard enough.",
-        })
+        return "No obvious security disasters found. That just means I didn't look hard enough."
 
-    return json.dumps({"findings": findings})
+    return "\n".join(findings)
+

@@ -1,4 +1,5 @@
 import React, { useRef, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown'
 import type { Message } from '../types/chat'
 import { ThinkingSteps } from './ThinkingSteps'
 
@@ -21,12 +22,17 @@ export function MessageList({ messages, loading }: Readonly<Props>) {
           {msg.role === 'assistant' && <ThinkingSteps steps={msg.steps} />}
           {msg.content && (
             <div
+              className={msg.role === 'assistant' ? 'assistant-bubble' : undefined}
               style={{
                 ...styles.bubble,
                 ...(msg.role === 'user' ? styles.userBubble : styles.assistantBubble),
               }}
             >
-              {msg.content}
+              {msg.role === 'assistant' ? (
+                <ReactMarkdown>{msg.content}</ReactMarkdown>
+              ) : (
+                msg.content
+              )}
             </div>
           )}
         </div>
@@ -62,7 +68,6 @@ const styles: Record<string, React.CSSProperties> = {
     borderRadius: '12px',
     lineHeight: 1.5,
     fontSize: '15px',
-    whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
     textAlign: 'left',
   },
@@ -73,6 +78,8 @@ const styles: Record<string, React.CSSProperties> = {
   },
   assistantBubble: {
     alignSelf: 'flex-start',
+    width: '100%',
+    maxWidth: '100%',
     background: 'transparent',
     color: '#1a1a1a',
   },
